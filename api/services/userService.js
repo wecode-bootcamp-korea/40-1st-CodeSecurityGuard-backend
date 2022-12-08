@@ -1,34 +1,57 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const { getUserByEmail } = require('../models/userDao');
+const userDao = require('../models/userDao')
 
-const hashPassword = async(plaintexPassword) =>{
-    const saltRound = 12;
-    const salt = await bcrypt.genSalt(saltRound);
+const EMAIL_REGEX    = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
 
-    return await bcrypt.hash(plaintexPassword, salt);
+const hashPassword = async (plainTextPassword) => {
+    
+        const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
+        const salt = await bcrypt.genSalt(SALT_ROUNDS);
+        const hashedPassword = await bcrypt.hash(plainTextPassword, salt);
+        
+        return hashedPassword;
 }
 
-const signIn = async (email, password) =>{
-    const emailRegex = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
-    //const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{4,8}$/
+const signUp = async (name, email, password, phoneNumber) => {
+    
+    if ( !EMAIL_REGEX.test(email)) {
+        const error = new Error('INVALID_EMAIL')
+        error.statusCode = 400
 
-    if(!emailRegex.test(email)){
+        throw error;
+    }
+
+    if ( !PASSWORD_REGEX.test(password)) {
+        const error = new Error('INVALID_PASSWORD')
+        error.statusCode = 400
+
+        throw error;
+    }
+
+    const hashedPassword = await hashPassword(password)
+    return await userDao.createUser(name, email, hashedPassword, phoneNumber)
+   
+}
+const signIn = async (email, password) =>{
+
+    if(!EMAIL_REGEX.test(email)){
         const error = new Error('INVALID_EMAIL')
         error.statusCode = 401
 
         throw error
     }
 
-    // if(!passwordRegex.test(password)){
-    //     const error = new Error('INVALID_PASSWORD')
-    //     error.statusCode = 401
+    if(!PASSWORD_REGEX.test(password)){
+        const error = new Error('INVALID_PASSWORD')
+        error.statusCode = 401
 
-    //     throw error
-    // }
+        throw error
+    }
 
-    const user = await getUserByEmail(email)
+    const user = await userDao.getUserByEmail(email)
 
     const match = await bcrypt.compare(password, user.password.toString());
 
@@ -42,7 +65,7 @@ const signIn = async (email, password) =>{
     const accessToken = jwt.sign({id: user.id}, process.env.JWT_SECRET,
          {
              algorithm: process.env.ALGORITHM,
-             expiresIN: process.env.JWT_SECRET_IN
+             expiresIn: process.env.JWT_EXPIRES_IN
 
          }
     )
@@ -50,6 +73,8 @@ const signIn = async (email, password) =>{
     return accessToken
 }
 
-module.exports = { 
+
+module.exports = {
+    signUp,
     signIn
 }
