@@ -4,7 +4,8 @@ const userDao = require('../models/userDao')
 
 const hashPassword = async (plainTextPassword) => {
     
-        const salt = await bcrypt.genSalt(process.env.SALT_ROUNDS);
+        const SALT_ROUNDS = 12;
+        const salt = await bcrypt.genSalt(SALT_ROUNDS);
         const hashedPassword = await bcrypt.hash(plainTextPassword, salt);
         
         return hashedPassword;
