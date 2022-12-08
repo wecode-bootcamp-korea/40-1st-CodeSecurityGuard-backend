@@ -4,7 +4,7 @@ const userDao = require('../models/userDao')
 
 const hashPassword = async (plainTextPassword) => {
     
-        const SALT_ROUNDS = 12;
+        const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
         const salt = await bcrypt.genSalt(SALT_ROUNDS);
         const hashedPassword = await bcrypt.hash(plainTextPassword, salt);
         
@@ -12,17 +12,17 @@ const hashPassword = async (plainTextPassword) => {
 }
 
 const signUp = async (name, email, password, phoneNumber) => {
-    const emailRegex    =/^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
-	const passwordRegex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+    const EMAIL_REGEX    = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
+	const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
 
-    if ( !emailRegex.test(email)) {
+    if ( !EMAIL_REGEX.test(email)) {
         const error = new Error('INVALID_EMAIL')
         error.statusCode = 400
 
         throw error;
     }
 
-    if ( !passwordRegex.test(password)) {
+    if ( !PASSWORD_REGEX.test(password)) {
         const error = new Error('INVALID_PASSWORD')
         error.statusCode = 400
 
