@@ -12,7 +12,7 @@ const dataSource = new DataSource({
 dataSource
     .initialize()
     .then(() =>{
-      console.log("Date source has benn initialized");
+      console.log("Data source has benn initialized");
     })
     .catch((error) => {
       console.log("Error during Data Source initialization", error);
