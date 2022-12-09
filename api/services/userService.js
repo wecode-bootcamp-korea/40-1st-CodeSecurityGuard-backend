@@ -15,40 +15,16 @@ const hashPassword = async (plainTextPassword) => {
 }
 
 const signUp = async (name, email, password, phoneNumber) => {
-    
-    if (emailValidator(email)) {
-        const error = new Error('INVALID_EMAIL')
-        error.statusCode = 400
-
-        throw error;
-    }
-
-    if (passwordValidator(password)) {
-        const error = new Error('INVALID_PASSWORD')
-        error.statusCode = 400
-
-        throw error;
-    }
+    emailValidator(email);
+    passwordValidator(password);
 
     const hashedPassword = await hashPassword(password)
     return await userDao.createUser(name, email, hashedPassword, phoneNumber)
    
 }
 const signIn = async (email, password) =>{
-
-    if(emailValidator(email)){
-        const error = new Error('INVALID_EMAIL2')
-        error.statusCode = 401
-
-        throw error
-    }
-
-    if(passwordValidator(password)){
-        const error = new Error('INVALID_PASSWORD2')
-        error.statusCode = 401
-
-        throw error
-    }
+    emailValidator(email);
+    passwordValidator(password);
 
     const user = await userDao.getUserByEmail(email)
 
