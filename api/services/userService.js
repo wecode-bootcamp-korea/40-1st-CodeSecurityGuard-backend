@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const userDao = require('../models/userDao')
-const validator = require('../utils/validator')
+const { emailValidator, passwordValidator } = require('../utils/validator')
 
 
 const hashPassword = async (plainTextPassword) => {
@@ -16,14 +16,14 @@ const hashPassword = async (plainTextPassword) => {
 
 const signUp = async (name, email, password, phoneNumber) => {
     
-    if (validator.emailValidator(email)) {
+    if (emailValidator(email)) {
         const error = new Error('INVALID_EMAIL')
         error.statusCode = 400
 
         throw error;
     }
 
-    if (validator.passwordValidator(password)) {
+    if (passwordValidator(password)) {
         const error = new Error('INVALID_PASSWORD')
         error.statusCode = 400
 
@@ -36,14 +36,14 @@ const signUp = async (name, email, password, phoneNumber) => {
 }
 const signIn = async (email, password) =>{
 
-    if(validator.emailValidator(email)){
+    if(emailValidator(email)){
         const error = new Error('INVALID_EMAIL2')
         error.statusCode = 401
 
         throw error
     }
 
-    if(validator.passwordValidator(password)){
+    if(passwordValidator(password)){
         const error = new Error('INVALID_PASSWORD2')
         error.statusCode = 401
 
