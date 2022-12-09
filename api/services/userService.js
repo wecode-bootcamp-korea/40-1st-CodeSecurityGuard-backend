@@ -2,9 +2,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const userDao = require('../models/userDao')
+const validator = require('../utils/validator')
 
-const EMAIL_REGEX    = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/
-const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
 
 const hashPassword = async (plainTextPassword) => {
     
@@ -17,14 +16,14 @@ const hashPassword = async (plainTextPassword) => {
 
 const signUp = async (name, email, password, phoneNumber) => {
     
-    if ( !EMAIL_REGEX.test(email)) {
+    if (validator.emailValidator(email)) {
         const error = new Error('INVALID_EMAIL')
         error.statusCode = 400
 
         throw error;
     }
 
-    if ( !PASSWORD_REGEX.test(password)) {
+    if (validator.passwordValidator(password)) {
         const error = new Error('INVALID_PASSWORD')
         error.statusCode = 400
 
@@ -37,15 +36,15 @@ const signUp = async (name, email, password, phoneNumber) => {
 }
 const signIn = async (email, password) =>{
 
-    if(!EMAIL_REGEX.test(email)){
-        const error = new Error('INVALID_EMAIL')
+    if(validator.emailValidator(email)){
+        const error = new Error('INVALID_EMAIL2')
         error.statusCode = 401
 
         throw error
     }
 
-    if(!PASSWORD_REGEX.test(password)){
-        const error = new Error('INVALID_PASSWORD')
+    if(validator.passwordValidator(password)){
+        const error = new Error('INVALID_PASSWORD2')
         error.statusCode = 401
 
         throw error

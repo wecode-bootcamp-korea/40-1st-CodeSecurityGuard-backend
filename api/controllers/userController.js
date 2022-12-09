@@ -21,12 +21,13 @@ const signUp = async (req, res) => {
 }
 
 const signIn = async (req, res) => {
-    const {email, password} = req.body
-
     try{
+        const {email, password} = req.body
         const accessToken = await userService.signIn(email, password)
-        res.status(200).json({ accessToken })
-    }catch (err){
+        
+        return res.status(200).json({ accessToken: accessToken })
+    } catch (err) {
+        console.log(err)
         res.status(err.statusCode|| 400).json({message: err.message});
     }
 }

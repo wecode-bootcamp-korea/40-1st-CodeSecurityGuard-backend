@@ -10,7 +10,7 @@ const getUserByEmail = async (email) => {
          FROM users
          WHERE email =?`, [email]
     )
-    return result [0]
+    return result[0]
 }
 
 const createUser = async (name, email, hashedPassword, phoneNumber) => {
