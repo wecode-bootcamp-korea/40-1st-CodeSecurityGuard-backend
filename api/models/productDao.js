@@ -2,7 +2,19 @@ const dataSource = require('./dataSource')
 
 const getAllProducts = async () => {
     try {
-        const result = await dataSource.query(`SELECT * FROM products`)
+        const result = await dataSource.query(
+            `SELECT
+                id,
+                brand_id AS brandId,
+                name,
+                thumbnail_image_url AS thumbnailImageUrl,
+                description,
+                price,
+                discounted_price AS discountedPrice,
+                sub_category_id AS subCategoryId
+            FROM 
+                products
+            `)
         return result
     } catch {
         const error = new Error('Cannot get all-products')
@@ -16,15 +28,14 @@ const getProductByCategoryId = async (categoryId) => {
         const result = await dataSource.query(`
             SELECT
                 p.id,
-                p.brand_id,
+                p.brand_id AS brandId,
                 p.name,
                 p.description,
-                p.thumbnail_image_url,
+                p.thumbnail_image_url AS thumbnailImageUrl,
                 p.price,
-                p.discounted_price,
-                p.created_at
-            FROM products as p
-            INNER JOIN sub_categories as s
+                p.discounted_price AS discountedPrice 
+            FROM products AS p
+            INNER JOIN sub_categories AS s
             WHERE p.sub_category_id = s.id AND s.category_id = ?
             `, [categoryId]
         )
@@ -40,8 +51,14 @@ const getProductBySubCategoryId = async (subCategoryId) => {
     try {
         const result = await dataSource.query(`
             SELECT
-                *
-            FROM products as p
+                id,
+                brand_id AS brandId,
+                name,
+                thumbnail_image_url AS thumbnailImageUrl,
+                description,
+                price,
+                discounted_price AS discountedPrice
+            FROM products AS p
             WHERE p.sub_category_id = ?
             `, [subCategoryId]
         )
@@ -56,7 +73,16 @@ const getProductBySubCategoryId = async (subCategoryId) => {
 const getProductById = async (productId) => {
     try {
         const result = await dataSource.query(`
-            SELECT * FROM products AS p
+            SELECT 
+                id,
+                brand_id AS brandId,
+                name,
+                thumbnail_image_url AS thumbnailImageUrl,
+                description,
+                price,
+                discounted_price AS discountedPrice,
+                sub_category_id AS subCategoryId
+            FROM products AS p
             WHERE p.id = ?
             `, [productId]
         )
