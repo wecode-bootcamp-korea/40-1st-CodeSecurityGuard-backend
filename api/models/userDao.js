@@ -13,6 +13,21 @@ const getUserByEmail = async (email) => {
     return result[0]
 }
 
+const getUserById = async (id) => {
+	const result = await dataSource.query(`
+		SELECT 
+			id,
+			name,
+			email,
+			password,
+            phone_number
+		FROM users
+		WHERE id=?`, [id]
+	)
+
+	return result[0]
+}
+
 const createUser = async (name, email, hashedPassword, phoneNumber) => {
     try {
         const result = await dataSource.query(`
@@ -31,14 +46,13 @@ const createUser = async (name, email, hashedPassword, phoneNumber) => {
         )
 
         return result.insertId
-    } catch {
-        const error = new Error('Cannot create user')
-        error.statusCode = 400
-        throw error
+    } catch (err) {
+        throw err
     }
 }
 
 module.exports = {
     createUser,
-    getUserByEmail
+    getUserByEmail,
+    getUserById
 }
