@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', productController.getAllProducts)
 router.get('/category/:categoryId', productController.getProductByCategoryId)
 router.get('/subCategory/:subCategoryId', productController.getProductBySubCategoryId)
-router.get('/:productId', loginRequired, productController.getProductById)
+router.get('/:productId', productController.getProductById)
 
 module.exports = {
     router
