@@ -34,7 +34,7 @@ const createUser = async (name, email, hashedPassword, phoneNumber) => {
                 name,
                 email,
                 password,
-                phone_number AS phoneNumber
+                phone_number
             ) VALUES (
                 ?,
                 ?,
