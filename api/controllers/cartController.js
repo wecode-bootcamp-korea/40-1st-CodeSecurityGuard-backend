@@ -56,11 +56,28 @@ const getCartByUserId = async (req, res) => {
     }
 }
 
+const deleteCartByCartId = async (req, res) => {
+    try{
+        const {cart_id} =req.body
 
+        if (!cart_id){
+            const error = new Error('CANNOT DELETE')
+            error.statusCode = 400
+
+            throw error;
+        }
+        await cartService.deleteCartByCartId(cart_id);
+
+        res.status(200)
+    }catch(err){
+        res.status(err.statusCode || 400).json({message: err.message})
+    }
+}
 
 
 module.exports = {
     createCart,
     updateCart,
-    getCartByUserId
+    getCartByUserId,
+    deleteCartByCartId
 }

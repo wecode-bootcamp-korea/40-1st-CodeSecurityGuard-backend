@@ -1,13 +1,12 @@
 const express = require('express');
-
-const {cartController} = require('../controllers/cartController')
-const {loginRequired} = require('../utils/auth')
+const cartController = require('../controllers/cartController')
+//const {loginRequired} = require('../utils/auth')
 const router = express.Router();
 
-router.post('',loginRequired,cartController.createCart)
-router.patch('', loginRequired,cartController.updateCart)
-router.get('', loginRequired,cartController.getCartByUserId)
-router.delete('', loginRequired,cartController.deleteCartByCartId)
+router.post('',cartController.createCart)
+router.patch('',cartController.updateCart)
+router.get('', cartController.getCartByUserId)
+router.delete('', cartController.deleteCartByCartId)
 
 module.exports ={
     router

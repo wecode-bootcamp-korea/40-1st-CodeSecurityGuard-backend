@@ -58,9 +58,19 @@ const getCartByUserId = async(user_id) => {
     return result[0] 
 }
 
+const deleteCartByCartId = async(cart_id) => {
+    const result = (await dataSource.query(`
+            DELETE FROM carts
+            WHERE id = ?`, [cart_id]
+        )).affectedRows
+
+        if (deletedRows !== 0 && deletedRows !== 1) 
+        throw new Error ('UNEXPECTED_NUMBER_OF_RECORD_DELETED')
+}
 
 module.exports ={
     createCart,
     updateCart,
-    getCartByUserId
+    getCartByUserId,
+    deleteCartByCartId
 }

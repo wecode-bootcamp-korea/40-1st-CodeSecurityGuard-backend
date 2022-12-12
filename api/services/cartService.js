@@ -12,9 +12,9 @@ const getCartByUserId = async (user_id) => {
     return await cartDao.getCartByUserId(user_id)
 }
 
-// const deleteCartByCartId = async (cart_id) =>{
-//     return await cartDao.deleteCartByCartId(cart_id)
-// }
+const deleteCartByCartId = async (cart_id) =>{
+    return await cartDao.deleteCartByCartId(cart_id)
+}
 
 module.exports ={
     createCart,
