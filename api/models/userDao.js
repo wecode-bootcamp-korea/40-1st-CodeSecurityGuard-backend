@@ -20,7 +20,7 @@ const getUserById = async (id) => {
 			name,
 			email,
 			password,
-            phone_number
+            phone_number AS phoneNumber
 		FROM users
 		WHERE id=?`, [id]
 	)
@@ -34,7 +34,7 @@ const createUser = async (name, email, hashedPassword, phoneNumber) => {
                 name,
                 email,
                 password,
-                phone_number
+                phone_number AS phoneNumber
             ) VALUES (
                 ?,
                 ?,
