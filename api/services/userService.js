@@ -17,11 +17,10 @@ const hashPassword = async (plainTextPassword) => {
 const signUp = async (name, email, password, phoneNumber) => {
     emailValidator(email);
     passwordValidator(password);
-
     const hashedPassword = await hashPassword(password)
     return await userDao.createUser(name, email, hashedPassword, phoneNumber)
-   
 }
+
 const signIn = async (email, password) =>{
     emailValidator(email);
     passwordValidator(password);
