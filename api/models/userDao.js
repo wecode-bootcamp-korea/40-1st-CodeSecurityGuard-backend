@@ -24,7 +24,6 @@ const getUserById = async (id) => {
 		FROM users
 		WHERE id=?`, [id]
 	)
-
 	return result[0]
 }
 
@@ -44,7 +43,6 @@ const createUser = async (name, email, hashedPassword, phoneNumber) => {
             )`,
             [name, email, hashedPassword, phoneNumber]
         )
-
         return result.insertId
     } catch (err) {
         throw err
