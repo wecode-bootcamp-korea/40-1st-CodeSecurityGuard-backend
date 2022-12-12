@@ -39,9 +39,20 @@ const getProductById = async (req, res) => {
     }
 }
 
+const searchProduct = async (req, res) => {
+    try {
+        const keyword = req.query.keyword
+        let result = await productService.searchProduct(keyword)
+        res.status(200).json({ data : result })
+    } catch (err) {
+        res.status(err.statusCode || 400).json({ message : err.message })
+    }
+}
+
 module.exports = {
     getAllProducts,
     getProductByCategoryId,
     getProductBySubCategoryId,
-    getProductById
+    getProductById,
+    searchProduct
 }

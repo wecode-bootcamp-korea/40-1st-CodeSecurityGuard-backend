@@ -20,9 +20,16 @@ const getProductById = async (productId) => {
     return result
 }
 
+const searchProduct = async (keyword) => {
+    let keywordCheck = keyword.substring(1, keyword.length-1)
+    let result = await productDao.searchProduct(keywordCheck)
+    return result
+}
+
 module.exports = {
     getAllProducts,
     getProductByCategoryId,
     getProductBySubCategoryId,
-    getProductById
+    getProductById,
+    searchProduct
 }
