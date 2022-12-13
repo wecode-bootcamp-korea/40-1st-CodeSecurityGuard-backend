@@ -4,8 +4,8 @@ const {loginRequired} = require('../utils/auth')
 
 const router = express.Router();
 
-router.post('/', orderController.addOrder)
-router.patch('/undo/:orderId', orderController.updateOrderStatus)
+router.post('/', loginRequired, orderController.addOrder)
+router.patch('/', loginRequired, orderController.updateUserPoint)
 
 module.exports = {
     router

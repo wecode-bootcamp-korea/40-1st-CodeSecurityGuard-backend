@@ -1,17 +1,17 @@
 const orderDao = require('../models/orderDao')
 
-const addOrder = async (userId, newPoint) => {
+const addOrder = async (userId, price) => {
     try {
-        const result = await orderDao.addOrder(userId, newPoint)
+        const result = await orderDao.addOrder(userId, price)
         return result 
     } catch (err) {
         throw err
     }
 }
 
-const updateOrderStatus = async (orderId) => {
+const updateUserPoint = async (userId, newPoint) => {
     try {
-        const result = await orderDao.updateOrderStatus(orderId)
+        const result = await orderDao.updateUserPoint(userId, newPoint)
         return result
     } catch (err) {
         throw err
@@ -20,5 +20,5 @@ const updateOrderStatus = async (orderId) => {
 
 module.exports = {
     addOrder,
-    updateOrderStatus
+    updateUserPoint
 }

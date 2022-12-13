@@ -2,25 +2,24 @@ const orderService = require('../services/orderService')
 
 const addOrder = async (req, res) => {
     try {
-        const {userId, newPoint} = req.body;
-        let result = await orderService.addOrder(userId, newPoint)
-        res.status(200).json({ data : result })
+        const {userId, price} = req.body;
+        let result = await orderService.addOrder(userId, price)
+        res.status(200).json({ data : "ORDER_COMPLETE" })
     } catch (err) {
         res.status(err.statusCode || 400).json({ message : err.message })
     }
 }
 
-const updateOrderStatus = async (req, res) => {
+const updateUserPoint = async (req, res) => {
     try {
-        const orderId = +req.params.orderId
-        const result = await orderService.updateOrderStatus(orderId)
-        res.status(200).json({ affectedRows : result })
+        const { userId, newPoint } = req.body;
+        let result = await orderService.updateUserPoint(userId, newPoint)
+        res.status(200).json({ message : "USER_POINT_UPDATED" })
     } catch (err) {
-        throw err
+        res.status(err.statusCode || 400).json({ message : err.message })
     }
 }
-
 module.exports = {
     addOrder,
-    updateOrderStatus
+    updateUserPoint
 }

@@ -1,38 +1,48 @@
 const { json } = require('express')
 const dataSource = require('./dataSource')
 
-const addOrder = async (userId, newPoint) => {
-    const result = await dataSource.query(`
-        INSERT INTO orders (
-            user_id,
-            status_id,
-            amount
-        ) VALUES (
-            ?,
-            ?,
-            ?
-        )`,
-        [userId, newPoint]
-    )
+const addOrder = async (userId, price) => {
+    try {
+        const result = await dataSource.query(`
+            INSERT INTO orders (
+                user_id,
+                amount
+            ) VALUES (
+                ?,
+                ?
+            )`,
+            [userId, price]
+        )
 
-    return result.insertId
+        return result.affectedRows
+    }
+    catch {
+        const error = new Error('FAILED_TO_ADD_ORDER')
+        error.statusCode = 400
+        throw error
+    }
 }
 
-const updateOrderStatus = async (orderId) => {
-    const result = await dataSource.query(`
-        UPDATE orders
-        SET
-            status_id = 1
-        WHERE
-            id = ?
-    `,  [orderId]
-    )
+const updateUserPoint = async (userId, newPoint) => {
+    try {    
+        const result = await dataSource.query(`
+            UPDATE users
+            SET
+                point = ?
+            WHERE
+                id = ?
+        `,  [newPoint, userId]
+        )
 
-    return result.affectedRows
+        return result.affectedRows
+    } catch {
+        const error = new Error('FAILED_TO_UPDATE_USER_POINT')
+        error.statusCode = 400
+        throw error
+    }
 }
 
 module.exports = {
     addOrder,
-    checkOrderId,
-    updateOrderStatus
+    updateUserPoint
 }
