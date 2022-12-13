@@ -23,15 +23,15 @@ const addOrder = async (userId, price) => {
     }
 }
 
-const updateUserPoint = async (userId, newPoint) => {
+const updateUserPoint = async (userId, price) => {
     try {    
         const result = await dataSource.query(`
             UPDATE users
             SET
-                point = ?
+                point = (point - ${price})
             WHERE
                 id = ?
-        `,  [newPoint, userId]
+        `,  [userId]
         )
 
         return result.affectedRows
