@@ -6,7 +6,7 @@ const createCart = async (req, res) => {
         const { productId, quantity } = req.body
         const userId = req.user.id
         
-        if ( !productId || !quantity ) {
+        if ( !productId ) {
             const error = new Error('KEY_ERROR')
             error.statusCode = 400
 

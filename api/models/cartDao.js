@@ -1,4 +1,6 @@
 const dataSource = require('./dataSource')
+const queryRunner = dataSource.createQueryRunner()
+
 
 const createCart = async ( productId, userId, quantity) => {
 try {
@@ -26,19 +28,22 @@ const result = await dataSource.query(`
     }
 }
 
-const updateCart = async (quantity,productId,userId) =>{
-    const updateRows = (await dataSource.query(`
+const updateCart = async (quantity, productId, userId) =>{
+  await queryRunner.connect()
+  await queryRunner.startTransaction()
+    
+  const updateRows = (await queryRunner.query(`
         UPDATE carts
-        SET quantity =?,
-            product_id =?
+        SET quantity =?
+            product_id = ?
         WHERE user_id =?`,
-        [quantity, productId ,userId]
+            [quantity ,userId, productId]
       )).affectedRows
 
-      if (updateRows !==1) 
+      if (updateRows !== 1) 
       throw new Error ('UNEXPECTED_NUMBER_UPDATED')
 
-      const result = await dataSource.query(`
+      const result = await queryRunner.query(`
           SELECT
           c.user_id,
           c.product_id,
@@ -60,11 +65,11 @@ const updateCart = async (quantity,productId,userId) =>{
 const getCartByUserId = async(userId) => {
     const result = await dataSource.query(`
         SELECT 
-          c.user_id,
-          c.product_id,
+          c.user_id as UserId,
+          c.product_id as productId,
           c.quantity,
-          c.status_id,
-          p.thumbnail_image_url,
+          c.status_id as statusId,
+          p.thumbnail_image_url as thumbnailImageUrl,
           p.price,
           p.name,
           u.point
