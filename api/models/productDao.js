@@ -94,9 +94,35 @@ const getProductById = async (productId) => {
     }
 }
 
+const searchProduct = async (keyword) => {
+    try {
+        const result = await dataSource.query(`
+            SELECT 
+                id,
+                brand_id AS brandId,
+                name,
+                thumbnail_image_url AS thumbnailImageUrl,
+                description,
+                price,
+                discounted_price AS discountedPrice,
+                sub_category_id AS subCategoryId
+            FROM products
+            WHERE name LIKE '%${keyword}%'
+                OR description LIKE '%${keyword}%'
+            `,
+        )
+        return result
+    } catch {
+        const error = new Error('Cannot search product')
+        error.statusCode = 400
+        throw error
+    }
+}
+
 module.exports = {
     getAllProducts,
     getProductByCategoryId,
     getProductBySubCategoryId,
-    getProductById
+    getProductById,
+    searchProduct
 }
