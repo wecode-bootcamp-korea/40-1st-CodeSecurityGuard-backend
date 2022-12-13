@@ -25,7 +25,6 @@ const addOrder = async (userId, price) => {
         let newPoint = await queryRunner.query(`
             SELECT point FROM users WHERE id = ${userId}
         `)
-        console.log(newPoint[0].point)
 
         if (newPoint[0].point < 0) {
            throw err
