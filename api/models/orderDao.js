@@ -1,36 +1,18 @@
 const { json } = require('express')
 const dataSource = require('./dataSource')
 
-const checkOrderId = async () => {
-    const result = await dataSource.query(`
-        SELECT order_id FROM orders
-    `)
-    console.log(result[0].order_id)
-    return result
-}
-
-const addOrder = async (orderId, userId, completedStatusId, productId, quantity, amount, address, completedOrderMessage) => {
+const addOrder = async (userId, newPoint) => {
     const result = await dataSource.query(`
         INSERT INTO orders (
-            order_id,
             user_id,
             status_id,
-            product_id,
-            quantity,
-            amount,
-            address,
-            order_message
+            amount
         ) VALUES (
-            ?,
-            ?,
-            ?,
-            ?,
-            ?,
             ?,
             ?,
             ?
         )`,
-        [orderId, userId, completedStatusId, productId, quantity, amount, address, completedOrderMessage]
+        [userId, newPoint]
     )
 
     return result.insertId

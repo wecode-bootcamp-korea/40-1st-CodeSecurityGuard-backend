@@ -2,8 +2,8 @@ const orderService = require('../services/orderService')
 
 const addOrder = async (req, res) => {
     try {
-        const {userId, productId, quantity, amount, address} = req.body;
-        let result = await orderService.addOrder(userId, productId, quantity, amount, address)
+        const {userId, newPoint} = req.body;
+        let result = await orderService.addOrder(userId, newPoint)
         res.status(200).json({ data : result })
     } catch (err) {
         res.status(err.statusCode || 400).json({ message : err.message })
