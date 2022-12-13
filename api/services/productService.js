@@ -21,8 +21,7 @@ const getProductById = async (productId) => {
 }
 
 const searchProduct = async (keyword) => {
-    let keywordCheck = keyword.substring(1, keyword.length-1)
-    let result = await productDao.searchProduct(keywordCheck)
+    let result = await productDao.searchProduct(keyword)
     return result
 }
 

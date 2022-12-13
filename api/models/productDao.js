@@ -94,7 +94,7 @@ const getProductById = async (productId) => {
     }
 }
 
-const searchProduct = async (keywordCheck) => {
+const searchProduct = async (keyword) => {
     try {
         const result = await dataSource.query(`
             SELECT 
@@ -107,8 +107,8 @@ const searchProduct = async (keywordCheck) => {
                 discounted_price AS discountedPrice,
                 sub_category_id AS subCategoryId
             FROM products
-            WHERE name LIKE '%${keywordCheck}%'
-                OR description LIKE '%${keywordCheck}%'
+            WHERE name LIKE '%${keyword}%'
+                OR description LIKE '%${keyword}%'
             `,
         )
         return result
