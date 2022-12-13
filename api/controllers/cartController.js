@@ -1,76 +1,57 @@
 const cartService = require('../services/cartService')
-//const { catchAsync } = require('../utils/error')
+const user = require('../utils/auth')
 
 const createCart = async (req, res) => {
     try{
-        const {user_id, product_id, quantity} = req.body
-
-        if (!user_id || !product_id || !quantity ){
+        const { productId, quantity } = req.body
+        const userId = req.user.id
+        
+        if ( !productId || !quantity ) {
             const error = new Error('KEY_ERROR')
             error.statusCode = 400
 
             throw error;
         }
 
-        await cartService.createCart(user_id, product_id, quantity);
+        await cartService.createCart(productId, userId, quantity);
 
-        res.status(201).json({message : "CART_CREATED"})
+        res.status(201).json({ message : "CART_CREATED" })
     }catch (err){
-        res.status(err.statusCode || 400).json({message : err.message})
+        res.status(err.statusCode || 400).json({ message : err.message })
     }
 }
 
 const updateCart = async (req, res)=>{
+    const { quantity, productId } = req.body
+    const userId = req.user.id
+    
     try{
-        const {user_id, quantity} = req.body
-
-        if (!user_id){
-            const error = new Error('CHECK USER_ID')
-            error.statusCode = 400
-
-            throw error;
-        }
-        await cartService.updateCart(user_id, quantity);
-
-        res.status(200)
-    }catch (err){
-        res.status(err.statusCode || 400).json({message: err.message})
+        const cart = await cartService.updateCart(quantity, productId, userId)
+        
+        res.status(200).json({ cart })
+    } catch(error) {
+        res.status(error.statusCode || 400).json({ message: error.message })
     }
 }
 
 const getCartByUserId = async (req, res) => {
-    try{
-        const {user_id,product_id} = req.body
+     const userId = req.user.id
 
-        if(!user_id || !product_id){
-            const error = new Error('CANNOT READ INFOMATION')
-            error.statusCode = 400
+     const carts = await cartService.getCartByUserId(userId)
 
-            throw error;
-        }
-        await cartService.getCartByUserId(user_id,product_id);
-
-        res.status(200)
-    }catch(err){
-        res.status(err.statusCode || 400).json({message : err.message})
-    }
-}
+     res.status(200).json({ data: carts })
+} 
 
 const deleteCartByCartId = async (req, res) => {
+    const cartId = req.params.cartId
+    const userId = req.user.id
+
     try{
-        const {cart_id} =req.body
+        await cartService.deleteCartByCartId(cartId,userId)
 
-        if (!cart_id){
-            const error = new Error('CANNOT DELETE')
-            error.statusCode = 400
-
-            throw error;
-        }
-        await cartService.deleteCartByCartId(cart_id);
-
-        res.status(200)
-    }catch(err){
-        res.status(err.statusCode || 400).json({message: err.message})
+        res.status(204).end()
+    }catch (error){
+        res.status(error.statusCode || 400).json({ message:error.message })
     }
 }
 

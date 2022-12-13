@@ -83,7 +83,7 @@ const getProductById = async (productId) => {
                 discounted_price AS discountedPrice,
                 sub_category_id AS subCategoryId
             FROM products AS p
-            WHERE p.id = ?
+            WHERE p.id = ? 
             `, [productId]
         )
         return result
