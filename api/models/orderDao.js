@@ -1,48 +1,46 @@
 const { json } = require('express')
 const dataSource = require('./dataSource')
+const queryRunner = dataSource.createQueryRunner()
 
 const addOrder = async (userId, price) => {
     try {
-        const result = await dataSource.query(`
-            INSERT INTO orders (
-                user_id,
-                amount
-            ) VALUES (
-                ?,
-                ?
-            )`,
-            [userId, price]
-        )
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
 
-        return result.affectedRows
-    }
-    catch {
-        const error = new Error('FAILED_TO_ADD_ORDER')
-        error.statusCode = 400
-        throw error
-    }
-}
-
-const updateUserPoint = async (userId, price) => {
-    try {    
-        const result = await dataSource.query(`
+        await queryRunner.query(`
+            INSERT INTO orders 
+                (user_id,amount) 
+            VALUES 
+                (${userId}, ${price})
+        `)
+        
+        await queryRunner.query(`
             UPDATE users
             SET
                 point = (point - ${price})
             WHERE
-                id = ?
-        `,  [userId]
-        )
+                id = ${userId}
+        `)
 
-        return result.affectedRows
-    } catch {
-        const error = new Error('FAILED_TO_UPDATE_USER_POINT')
+        let newPoint = await queryRunner.query(`
+            SELECT point FROM users WHERE id = ${userId}
+        `)
+        console.log(newPoint[0].point)
+
+        if (newPoint[0].point < 0) {
+           throw err
+        }
+
+        await queryRunner.commitTransaction()
+
+    } catch (err) {
+        await queryRunner.rollbackTransaction()
+        const error = new Error('NOT_ENOUGH_POINTS')
         error.statusCode = 400
         throw error
     }
 }
 
 module.exports = {
-    addOrder,
-    updateUserPoint
+    addOrder
 }
