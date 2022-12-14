@@ -27,21 +27,23 @@ const getUserById = async (id) => {
 	return result[0]
 }
 
-const createUser = async (name, email, hashedPassword, phoneNumber) => {
+const createUser = async (name, email, hashedPassword, address, phoneNumber) => {
     try {
         const result = await dataSource.query(`
             INSERT INTO users (
                 name,
                 email,
                 password,
+                address,
                 phone_number
             ) VALUES (
                 ?,
                 ?,
                 ?,
+                ?,
                 ?
             )`,
-            [name, email, hashedPassword, phoneNumber]
+            [name, email, hashedPassword, address, phoneNumber]
         )
         return result.insertId
     } catch (err) {

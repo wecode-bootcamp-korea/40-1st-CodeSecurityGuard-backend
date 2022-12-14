@@ -1,3 +1,4 @@
+const { TransactionAlreadyStartedError } = require('typeorm')
 const dataSource = require('./dataSource')
 const queryRunner = dataSource.createQueryRunner()
 
@@ -29,10 +30,10 @@ const result = await dataSource.query(`
 }
 
 const updateCart = async (quantity, productId, userId) =>{
-  await queryRunner.connect()
-  await queryRunner.startTransaction()
-    
-  const updateRows = (await queryRunner.query(`
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+  try{
+    const updateRows = (await queryRunner.query(`
         UPDATE carts
         SET quantity =?
             product_id = ?
@@ -43,7 +44,7 @@ const updateCart = async (quantity, productId, userId) =>{
       if (updateRows !== 1) 
       throw new Error ('UNEXPECTED_NUMBER_UPDATED')
 
-      const result = await queryRunner.query(`
+    const result = await queryRunner.query(`
           SELECT
           c.user_id,
           c.product_id,
@@ -58,13 +59,19 @@ const updateCart = async (quantity, productId, userId) =>{
         INNER JOIN users u ON u.id= c.user_id
         WHERE user_id = ?`, [userId]
         )
-
+      await queryRunner.commitTransaction();
         return result[0]
-      }
-
+    }catch (err){
+        await transaction.rollbackTransaction();
+    }finally{
+        await transaction.release();
+    }
+}
+    
 const getCartByUserId = async(userId) => {
     const result = await dataSource.query(`
         SELECT 
+          c.id,
           c.user_id as UserId,
           c.product_id as productId,
           c.quantity,

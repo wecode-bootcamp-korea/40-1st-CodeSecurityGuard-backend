@@ -5,7 +5,6 @@ const getAllProducts = async () => {
         const result = await dataSource.query(
             `SELECT
                 id,
-                brand_id AS brandId,
                 name,
                 thumbnail_image_url AS thumbnailImageUrl,
                 description,
@@ -28,7 +27,6 @@ const getProductByCategoryId = async (categoryId) => {
         const result = await dataSource.query(`
             SELECT
                 p.id,
-                p.brand_id AS brandId,
                 p.name,
                 p.description,
                 p.thumbnail_image_url AS thumbnailImageUrl,
@@ -52,7 +50,6 @@ const getProductBySubCategoryId = async (subCategoryId) => {
         const result = await dataSource.query(`
             SELECT
                 id,
-                brand_id AS brandId,
                 name,
                 thumbnail_image_url AS thumbnailImageUrl,
                 description,
@@ -74,16 +71,17 @@ const getProductById = async (productId) => {
     try {
         const result = await dataSource.query(`
             SELECT 
-                id,
-                brand_id AS brandId,
-                name,
-                thumbnail_image_url AS thumbnailImageUrl,
-                description,
-                price,
-                discounted_price AS discountedPrice,
-                sub_category_id AS subCategoryId
+                p.id,
+                b.name AS brandName,
+                p.name,
+                p.thumbnail_image_url AS thumbnailImageUrl,
+                p.description,
+                p.price,
+                p.discounted_price AS discountedPrice,
+                p.sub_category_id AS subCategoryId
             FROM products AS p
-            WHERE p.id = ? 
+            LEFT JOIN brands AS b ON p.brand_id = b.id
+            WHERE p.id = ?
             `, [productId]
         )
         return result
@@ -94,9 +92,35 @@ const getProductById = async (productId) => {
     }
 }
 
+const searchProduct = async (keyword) => {
+    try {
+        const result = await dataSource.query(`
+            SELECT 
+                id,
+                brand_id AS brandId,
+                name,
+                thumbnail_image_url AS thumbnailImageUrl,
+                description,
+                price,
+                discounted_price AS discountedPrice,
+                sub_category_id AS subCategoryId
+            FROM products
+            WHERE name LIKE '%${keyword}%'
+            OR description LIKE '%${keyword}%'
+            `,
+        )
+        return result
+    } catch {
+        const error = new Error('Cannot search product')
+        error.statusCode = 400
+        throw error
+    }
+}
+
 module.exports = {
     getAllProducts,
     getProductByCategoryId,
     getProductBySubCategoryId,
-    getProductById
+    getProductById,
+    searchProduct
 }

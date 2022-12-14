@@ -47,7 +47,7 @@ const deleteCartByCartId = async (req, res) => {
     const userId = req.user.id
 
     try{
-        await cartService.deleteCartByCartId(cartId,userId)
+        await cartService.deleteCartByCartId(cartId, userId)
 
         res.status(204).end()
     }catch (error){
