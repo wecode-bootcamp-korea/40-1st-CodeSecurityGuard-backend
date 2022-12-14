@@ -3,8 +3,8 @@ const errMessages = require('./errorMessages')
 const catchAsync = func => {
 	return (req, res, next) => {
 		func(req, res, next).catch((error) => next({
-            statusCode : errMessages[error.message].statusCode,
-            message : errMessages[error.message].message
+            statusCode : errMessages[error.message]?.statusCode,
+            message : errMessages[error.message]?.message
         }))
 	}
 }

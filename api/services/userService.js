@@ -21,20 +21,18 @@ const signUp = async (name, email, password, address, phoneNumber) => {
     return await userDao.createUser(name, email, hashedPassword, address, phoneNumber)
 }
 
-const signIn = async (email, password) =>{
+const signIn = async (email, password) => {
     emailValidator(email);
-    passwordValidator(password);
-
+    
     const user = await userDao.getUserByEmail(email)
 
     const match = await bcrypt.compare(password, user.password.toString());
 
     if(!match){
-        const error = new Error('WRONG_PASSWORD')
-        error.statusCode = 401
-
-        throw error
+        throw new Error('passwordMatchErr')
     }
+    
+    passwordValidator(password);
 
     const accessToken = jwt.sign({id: user.id}, process.env.JWT_SECRET,
          {

@@ -4,7 +4,7 @@ const getAllProducts = async () => {
     try {
         const result = await dataSource.query(
             `SELECT
-                id,
+                idd,
                 name,
                 thumbnail_image_url AS thumbnailImageUrl,
                 description,

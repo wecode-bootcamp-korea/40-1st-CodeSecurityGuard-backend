@@ -12,7 +12,7 @@ const getCartByUserId = async (userId) => {
     return await cartDao.getCartByUserId(userId)
 }
 
-const deleteCartByCartId = async (cartId,userId) =>{
+const deleteCartByCartId = async (cartId, userId) =>{
     return await cartDao.deleteCartByCartId(cartId,userId)
 }
 
