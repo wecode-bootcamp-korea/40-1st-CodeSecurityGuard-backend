@@ -3,16 +3,16 @@ const userService = require('../services/userService')
 
 const signUp = async (req, res) => {
     try{   
-        const { name, email, password, phoneNumber } = req.body;
+        const { name, email, password, address, phoneNumber } = req.body;
         
-        if ( !name || !email || !password || !phoneNumber ) {
+        if ( !name || !email || !password || !address || !phoneNumber ) {
             const error = new Error('KEY_ERROR')
             error.statusCode = 400
             
             throw error;
         }
 
-        await userService.signUp(name, email, password, phoneNumber);
+        await userService.signUp(name, email, password, address, phoneNumber);
 
         res.status(201).json({ message : "USER_CREATED" })
     } catch (err) {
