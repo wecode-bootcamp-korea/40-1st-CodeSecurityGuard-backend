@@ -18,7 +18,7 @@ const addOrder = async (userId, price) => {
         await queryRunner.query(`
             UPDATE users
             SET
-                point = (point - ?)
+                point = (poin - ?)
             WHERE
                 id = ?
         `, [price, userId]
@@ -39,13 +39,12 @@ const addOrder = async (userId, price) => {
 
     } catch (err) {
         await queryRunner.rollbackTransaction()
-            if (err.message == 'INSUFFICIENT_POINT') {
-                throw err
-            } else {
-                const error = new Error('INVALID_TRANSACTION')
-                error.statusCode = 400
-                throw error
-            }
+        if (err.message == 'INSUFFICIENT_POINT') {
+            throw err
+        } else {
+            err.message = 'INVALID_TRANSACTION'
+            throw err
+        }
     }
 }
 
