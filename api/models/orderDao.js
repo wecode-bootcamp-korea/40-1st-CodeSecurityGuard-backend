@@ -9,34 +9,43 @@ const addOrder = async (userId, price) => {
 
         await queryRunner.query(`
             INSERT INTO orders 
-                (user_id,amount) 
+                (user_id, amount) 
             VALUES 
-                (${userId}, ${price})
-        `)
+                (?, ?)
+        `, [userId, price]
+        )
         
         await queryRunner.query(`
             UPDATE users
             SET
-                point = (point - ${price})
+                point = (point - ?)
             WHERE
-                id = ${userId}
-        `)
+                id = ?
+        `, [price, userId]
+        )
 
         let newPoint = await queryRunner.query(`
-            SELECT point FROM users WHERE id = ${userId}
-        `)
+            SELECT point FROM users WHERE id = ?
+        `, [userId]
+        )
 
         if (newPoint[0].point < 0) {
-           throw err
+           error = new Error('INSUFFICIENT_POINT')
+           error.statusCode = 400
+           throw error
         }
 
         await queryRunner.commitTransaction()
 
     } catch (err) {
         await queryRunner.rollbackTransaction()
-        const error = new Error('NOT_ENOUGH_POINTS')
-        error.statusCode = 400
-        throw error
+            if (err.message == 'INSUFFICIENT_POINT') {
+                throw err
+            } else {
+                const error = new Error('INVALID_TRANSACTION')
+                error.statusCode = 400
+                throw error
+            }
     }
 }
 
