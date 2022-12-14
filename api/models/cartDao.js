@@ -72,7 +72,7 @@ const getCartByUserId = async(userId) => {
     const result = await dataSource.query(`
         SELECT 
           c.id,
-          c.user_id as UserId,
+          c.user_id as userId,
           c.product_id as productId,
           c.quantity,
           c.status_id as statusId,
