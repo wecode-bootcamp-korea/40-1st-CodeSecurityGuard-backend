@@ -4,7 +4,7 @@ module.exports = {
             statusCode : 400,
             message : "KEY_ERROR"
         },
-
+        
     //* PRODUCTS 
         getAllProductsErr : {
             statusCode : 404,
