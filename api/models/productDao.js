@@ -16,9 +16,7 @@ const getAllProducts = async () => {
             `)
         return result
     } catch {
-        const error = new Error('Cannot get all-products')
-        error.statusCode = 400
-        throw error
+        throw new Error('getAllProductsErr')
     }
 }
 
@@ -37,11 +35,10 @@ const getProductByCategoryId = async (categoryId) => {
             WHERE p.sub_category_id = s.id AND s.category_id = ?
             `, [categoryId]
         )
+        console.log(result)
         return result
     } catch {
-        const error = new Error('Cannot get category')
-        error.statusCode = 400
-        throw error
+        throw new Error('getProductByCategoryIdErr')
     }
 }
 
@@ -61,9 +58,7 @@ const getProductBySubCategoryId = async (subCategoryId) => {
         )
         return result
     } catch {
-        const error = new Error('Cannot get subcategory')
-        error.statusCode = 400
-        throw error
+        throw new Error('getProductBySubCategoryIdErr')
     }
 }
 
@@ -86,9 +81,7 @@ const getProductById = async (productId) => {
         )
         return result
     } catch {
-        const error = new Error('Cannot get product')
-        error.statusCode = 400
-        throw error
+        throw new Error('getProductByIdErr')
     }
 }
 
@@ -111,9 +104,7 @@ const searchProduct = async (keyword) => {
         )
         return result
     } catch {
-        const error = new Error('Cannot search product')
-        error.statusCode = 400
-        throw error
+        throw new Error('searchProductErr')
     }
 }
 

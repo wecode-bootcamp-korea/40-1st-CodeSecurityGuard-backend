@@ -18,7 +18,7 @@ const addOrder = async (userId, price) => {
         await queryRunner.query(`
             UPDATE users
             SET
-                point = (poin - ?)
+                point = (point - ?)
             WHERE
                 id = ?
         `, [price, userId]
