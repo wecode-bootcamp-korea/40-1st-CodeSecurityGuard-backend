@@ -106,7 +106,7 @@ const searchProduct = async (keyword) => {
                 sub_category_id AS subCategoryId
             FROM products
             WHERE name LIKE '%${keyword}%'
-                OR description LIKE '%${keyword}%'
+            OR description LIKE '%${keyword}%'
             `,
         )
         return result
