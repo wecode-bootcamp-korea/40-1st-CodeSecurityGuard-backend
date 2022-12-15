@@ -23,17 +23,15 @@ const signUp = async (name, email, password, address, phoneNumber) => {
 
 const signIn = async (email, password) => {
     emailValidator(email);
-    
-    const user = await userDao.getUserByEmail(email)
+    passwordValidator(password);
 
+    const user = await userDao.getUserByEmail(email)
     const match = await bcrypt.compare(password, user.password.toString());
 
     if(!match){
         throw new Error('passwordMatchErr')
     }
     
-    passwordValidator(password);
-
     const accessToken = jwt.sign({id: user.id}, process.env.JWT_SECRET,
          {
              algorithm: process.env.ALGORITHM,

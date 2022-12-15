@@ -31,7 +31,7 @@ const createUser = async (name, email, hashedPassword, address, phoneNumber) => 
     try {
         const result = await dataSource.query(`
             INSERT INTO users (
-                namee,
+                name,
                 email,
                 password,
                 address,

@@ -1,7 +1,5 @@
-const { TransactionAlreadyStartedError } = require('typeorm')
 const dataSource = require('./dataSource')
 const queryRunner = dataSource.createQueryRunner()
-
 
 const createCart = async ( productId, userId, quantity) => {
     try {
@@ -28,15 +26,16 @@ const createCart = async ( productId, userId, quantity) => {
 }
 
 const updateCart = async (quantity, productId, userId) =>{
+    
     await queryRunner.connect()
     await queryRunner.startTransaction()
+
   try{
     const updateRows = (await queryRunner.query(`
         UPDATE carts
-        SET quantity =?
-            product_id = ?
-        WHERE user_id =?`,
-            [quantity ,userId, productId]
+        SET quantity = ?
+        WHERE product_id = ? AND user_id = ?`,
+        [quantity ,productId, userId]
       )).affectedRows
 
       if (updateRows !== 1) {
@@ -60,10 +59,9 @@ const updateCart = async (quantity, productId, userId) =>{
         )
       await queryRunner.commitTransaction();
         return result[0]
-    }catch (err){
-        await transaction.rollbackTransaction();
-    }finally{
-        await transaction.release();
+    } catch {
+      await queryRunner.rollbackTransaction();
+      throw new Error('updateCartErr')
     }
 }
     
@@ -91,11 +89,12 @@ const deleteCartByCartId = async(cartId, userId) => {
     try{
       const deletedRows = (await dataSource.query(`
             DELETE FROM carts
-            WHERE id = ? AND WHERE user_id = ?`, [cartId, userId]
+            WHERE id = ? AND user_id = ?`, [cartId, userId]
         )).affectedRows
-
         if (deletedRows !== 0 && deletedRows !== 1) 
-        throw new Error ('deletedCartRowsErr')
+        {
+          throw new Error ('deletedCartRowsErr')
+        }
     } catch {
       throw new Error('deleteCartByCartIdErr')
     }

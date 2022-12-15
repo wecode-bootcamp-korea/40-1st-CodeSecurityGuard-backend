@@ -12,6 +12,7 @@ const catchAsync = func => {
 const globalErrorHandler = (err, req, res, next) => {
 	console.error(err.stack)
     err.statusCode = err.statusCode || 500;
+    err.message = err.message || "UNDEFINED_ERROR";
     res.status(err.statusCode).json({ error : true, message : err.message })
 }
 

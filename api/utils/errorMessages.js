@@ -59,6 +59,11 @@ module.exports = {
             message : 'UNEXPECTED_NUMBER_UPDATED'
         },
 
+        updateCartErr : {
+            statusCode : 400,
+            message : "CANNOT_UPDATE_CART"
+        },
+        
         createCartErr : {
             statusCode : 400,
             message : "CANNOT_CREATE_CART"

@@ -4,7 +4,7 @@ const getAllProducts = async () => {
     try {
         const result = await dataSource.query(
             `SELECT
-                idd,
+                id,
                 name,
                 thumbnail_image_url AS thumbnailImageUrl,
                 description,
@@ -35,7 +35,6 @@ const getProductByCategoryId = async (categoryId) => {
             WHERE p.sub_category_id = s.id AND s.category_id = ?
             `, [categoryId]
         )
-        console.log(result)
         return result
     } catch {
         throw new Error('getProductByCategoryIdErr')
