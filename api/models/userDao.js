@@ -46,8 +46,8 @@ const createUser = async (name, email, hashedPassword, address, phoneNumber) => 
             [name, email, hashedPassword, address, phoneNumber]
         )
         return result.insertId
-    } catch (err) {
-        throw err
+    } catch {
+        throw new Error('createUserErr')
     }
 }
 
