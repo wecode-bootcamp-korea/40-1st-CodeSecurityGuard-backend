@@ -1,8 +1,11 @@
+const { query } = require('express')
 const productService = require('../services/productService')
 
 const getAllProducts = async (req, res) => {
     try {
-        let result = await productService.getAllProducts()
+        const price = req.query.price
+
+        let result = await productService.getAllProducts(price)
         res.status(200).json({ data : result })
     } catch (err) {
         res.status(err.statusCode || 400).json({ message : err.message })
@@ -12,7 +15,10 @@ const getAllProducts = async (req, res) => {
 const getProductByCategoryId = async (req, res) => {
     try {
         const categoryId = +req.params.categoryId
-        let result = await productService.getProductByCategoryId(categoryId)
+        const price = req.query.price
+           
+        let result = await productService.getProductByCategoryId(categoryId,price)
+
         res.status(200).json({ data : result })
     } catch (err) {
         res.status(err.statusCode || 400).json({ message : err.message })
@@ -22,7 +28,10 @@ const getProductByCategoryId = async (req, res) => {
 const getProductBySubCategoryId = async (req, res) => {
     try {
         const subCategoryId = +req.params.subCategoryId
-        let result = await productService.getProductBySubCategoryId(subCategoryId)
+        const price = req.query.price
+
+        let result = await productService.getProductBySubCategoryId(subCategoryId,price)
+
         res.status(200).json({ data : result })
     } catch (err) {
         res.status(err.statusCode || 400).json({ message : err.message })
@@ -42,7 +51,9 @@ const getProductById = async (req, res) => {
 const searchProduct = async (req, res) => {
     try {
         const keyword = req.query.keyword
-        let result = await productService.searchProduct(keyword)
+        const price = req.query.price
+
+        let result = await productService.searchProduct(keyword, price)
         res.status(200).json({ data : result })
     } catch (err) {
         res.status(err.statusCode || 400).json({ message : err.message })

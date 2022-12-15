@@ -71,7 +71,7 @@ const updateCart = async (quantity, productId, userId) =>{
 const getCartByUserId = async(userId) => {
     const result = await dataSource.query(`
         SELECT 
-          c.id,
+          c.id as cartId,
           c.user_id as userId,
           c.product_id as productId,
           c.quantity,
@@ -84,14 +84,14 @@ const getCartByUserId = async(userId) => {
         INNER JOIN products p ON p.id = c.product_id
         INNER JOIN users u ON u.id= c.user_id
         WHERE user_id = ?`, [userId]
-    )
-    return result[0] 
+    )  
+    return result
 }
 
-const deleteCartByCartId = async(cartId) => {
+const deleteCartByCartId = async(cartId, userId) => {
     const deletedRows = (await dataSource.query(`
             DELETE FROM carts
-            WHERE id = ?`, [cartId]
+            WHERE id = ? AND user_id = ?`, [cartId, userId]
         )).affectedRows
 
         if (deletedRows !== 0 && deletedRows !== 1) 

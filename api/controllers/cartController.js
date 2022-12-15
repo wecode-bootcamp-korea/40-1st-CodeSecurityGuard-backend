@@ -1,5 +1,4 @@
 const cartService = require('../services/cartService')
-const user = require('../utils/auth')
 
 const createCart = async (req, res) => {
     try{
@@ -45,7 +44,7 @@ const getCartByUserId = async (req, res) => {
 const deleteCartByCartId = async (req, res) => {
     const cartId = req.params.cartId
     const userId = req.user.id
-
+    
     try{
         await cartService.deleteCartByCartId(cartId, userId)
 

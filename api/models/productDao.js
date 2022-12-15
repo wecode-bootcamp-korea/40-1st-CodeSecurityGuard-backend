@@ -1,18 +1,28 @@
 const dataSource = require('./dataSource')
 
-const getAllProducts = async () => {
+const sortSet = {
+    DEFAULT :'ORDER BY p.id',
+    ASC: 'ORDER BY p.price ASC',
+    DESC: 'ORDER BY p.price DESC'
+}
+const getAllProducts = async (price) => {
     try {
+
+        if(!price){price='DEFAULT'}
+
         const result = await dataSource.query(
             `SELECT
-                id,
-                name,
-                thumbnail_image_url AS thumbnailImageUrl,
-                description,
-                price,
-                discounted_price AS discountedPrice,
-                sub_category_id AS subCategoryId
+                p.id,
+                p.name,
+                p.thumbnail_image_url AS thumbnailImageUrl,
+                p.description,
+                p.price,
+                p.discounted_price AS discountedPrice,
+                p.sub_category_id AS subCategoryId
             FROM 
-                products
+                products p
+            
+                ${sortSet[price]}
             `)
         return result
     } catch {
@@ -22,8 +32,11 @@ const getAllProducts = async () => {
     }
 }
 
-const getProductByCategoryId = async (categoryId) => {
+const getProductByCategoryId = async (categoryId, price) => {    
     try {
+
+        if(!price){price='DEFAULT'}
+        
         const result = await dataSource.query(`
             SELECT
                 p.id,
@@ -34,9 +47,9 @@ const getProductByCategoryId = async (categoryId) => {
                 p.discounted_price AS discountedPrice 
             FROM products AS p
             INNER JOIN sub_categories AS s
-            WHERE p.sub_category_id = s.id AND s.category_id = ?
-            `, [categoryId]
-        )
+            WHERE p.sub_category_id = s.id AND s.category_id = ${categoryId}
+            ${sortSet[price]}
+            `)
         return result
     } catch {
         const error = new Error('Cannot get category')
@@ -45,19 +58,23 @@ const getProductByCategoryId = async (categoryId) => {
     }
 }
 
-const getProductBySubCategoryId = async (subCategoryId) => {
+const getProductBySubCategoryId = async (subCategoryId, price) => {
     try {
+
+        if(!price){price='DEFAULT'}
+
         const result = await dataSource.query(`
             SELECT
-                id,
-                name,
-                thumbnail_image_url AS thumbnailImageUrl,
-                description,
-                price,
-                discounted_price AS discountedPrice
+                p.id,
+                p.name,
+                p.thumbnail_image_url AS thumbnailImageUrl,
+                p.description,
+                p.price,
+                p.discounted_price AS discountedPrice
             FROM products AS p
-            WHERE p.sub_category_id = ?
-            `, [subCategoryId]
+            WHERE p.sub_category_id = ${subCategoryId}
+            ${sortSet[price]}
+            `,
         )
         return result
     } catch {
@@ -92,21 +109,25 @@ const getProductById = async (productId) => {
     }
 }
 
-const searchProduct = async (keyword) => {
+const searchProduct = async (keyword,price) => {
     try {
+
+        if(!price){price='DEFAULT'}
+
         const result = await dataSource.query(`
             SELECT 
-                id,
-                brand_id AS brandId,
-                name,
-                thumbnail_image_url AS thumbnailImageUrl,
-                description,
-                price,
-                discounted_price AS discountedPrice,
-                sub_category_id AS subCategoryId
-            FROM products
+                p.id,
+                p.brand_id AS brandId,
+                p.name,
+                p.thumbnail_image_url AS thumbnailImageUrl,
+                p.description,
+                p.price,
+                p.discounted_price AS discountedPrice,
+                p.sub_category_id AS subCategoryId
+            FROM products p
             WHERE name LIKE '%${keyword}%'
             OR description LIKE '%${keyword}%'
+            ${sortSet[price]}
             `,
         )
         return result
